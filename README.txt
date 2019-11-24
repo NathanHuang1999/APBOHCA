@@ -1,6 +1,12 @@
 # HuffmanTreeCompression
 Use C/C++ to implement a Huffman tree to handle text compression.
+This project is just an experiment of my Data Structure and 
+Algorithm Analysis lesson. It is developed and maintained by my 
+team mates and I.
+Any suggestion or idea is welcome.
 使用C/C++实现哈弗曼树，用于文本压缩。
+这只是我的数据结构与算法课程实验，由我和我的小组成员共同维护。
+欢迎大家向我们提出意见和建议！
 
 -----------------------------------------------------------------
 程序需求：
@@ -11,13 +17,10 @@ Use C/C++ to implement a Huffman tree to handle text compression.
 -----------------------------------------------------------------
 零散的想法：
 1.自己写一个HuffmanTree类
-2.压缩后文件的文件头应该储存文件识别信息（可以是0xDEADBEEF），表类型（
-码表？频率表？），表的大小，表。
-3.希望能以UTF-8格式编码，这样可以实现世界上绝大多数文本的压缩（没准以后
-可以压缩自己的文件呢对吧（大雾））。需要了解文本文件和Visual Studio的编
-码方式。
-4.需要学习C/C++文件读写和字符串（也许会用到CFile/CString/String类）。
-5.注意处理文件I/O异常。
+2.压缩后文件的应储存文件识别信息（可以是0xDEADBEEF），频数表大小，压缩
+后数据大小，频数表，压缩后数据。
+3.以UTF-16格式编码，这样可以兼容本地的常用文字类型。
+4.注意处理文件I/O异常。
 
 -----------------------------------------------------------------
 其它：
