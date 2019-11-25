@@ -1,16 +1,19 @@
 #pragma once
 #include"header_this.h"
 
-//¹ş¸¥ÂüÊ÷½Úµã³éÏóÀà
+//å“ˆå¼—æ›¼æ ‘èŠ‚ç‚¹æŠ½è±¡ç±»
 template<typename E> 
 class HuffmanNode {
 public:
 	virtual ~HuffmanNode() {}
-	virtual int weight() = 0;		//·µ»ØÈ¨ÖØ
-	virtual bool isLeaf() = 0;		//·µ»Ø½ÚµãÀàĞÍ
+	virtual int weight() = 0;		//è¿”å›æƒé‡
+	virtual bool isLeaf() = 0;		//è¿”å›èŠ‚ç‚¹ç±»å‹
+	virtual E val() = 0;
+	virtual HuffmanNode<E>* left() = 0;
+	virtual HuffmanNode<E>* right() = 0;
 };
 
-template<typename E>		//Ò¶½ÚµãÀà£¬¹ş¸¥ÂüÊ÷½ÚµãµÄ×ÓÀà
+template<typename E>		//å¶èŠ‚ç‚¹ç±»ï¼Œå“ˆå¼—æ›¼æ ‘èŠ‚ç‚¹çš„å­ç±»
 class LeafNode :public HuffmanNode<E> {
 private:
 	E item;
@@ -23,13 +26,15 @@ public:
 	int weight() { return weight; }
 	E val() { return item; }
 	bool isLeaf() { return true; }
+	HuffmanNode<E>* left() { return NULL; }
+	HuffmanNode<E>* right() { return NULL; }
 };
 
-template<typename E>		//ÄÚ²¿½ÚµãÀà£¬¹ş¸¥ÂüÊ÷½ÚµãµÄ×ÓÀà
+template<typename E>		//å†…éƒ¨èŠ‚ç‚¹ç±»ï¼Œå“ˆå¼—æ›¼æ ‘èŠ‚ç‚¹çš„å­ç±»
 class intlNode :public HuffmanNode<E> {
 private:
-	HuffmanNode<E>* lc;			//×ó×ÓÊ÷Ö¸Õë
-	HuffmanNode<E>* rc;			//ÓÒ×ÓÊ÷Ö¸Õë
+	HuffmanNode<E>* lc;			//å·¦å­æ ‘æŒ‡é’ˆ
+	HuffmanNode<E>* rc;			//å³å­æ ‘æŒ‡é’ˆ
 	int weight;
 public:
 	IntlNode(HuffmanNode<E>* l, HuffmanNode<E>* r){
@@ -47,18 +52,19 @@ public:
 	void setRight(HuffmanNode<E>* r) {
 		rc = r;
 	}
+	E val() { return NULL; }
 };
 
-//¹ş¸¥ÂüÊ÷Àà
+//å“ˆå¼—æ›¼æ ‘ç±»
 template<typename E>
 class HuffmanTree {
 private:
-	HuffmanNode<E>* root;		//È«Ê÷µÄ¸ù½Úµã
+	HuffmanNode<E>* root;		//å…¨æ ‘çš„æ ¹èŠ‚ç‚¹
 public:
-	HuffmanTree(E& val, int freq) {			//Ò¶×Ó¹¹Ôìº¯Êı
+	HuffmanTree(E& val, int freq) {			//å¶å­æ„é€ å‡½æ•°
 		root = new LeafNode<E>(val, freq);
 	}
-	//ÄÚ²¿½Úµã¹¹Ôìº¯Êı
+	//å†…éƒ¨èŠ‚ç‚¹æ„é€ å‡½æ•°
 	HuffmanTree(HuffmanTree<E>* l, HuffmanTree<E>* r) {
 		root = new intlNode<E>(l->root(), r->root());
 	}
@@ -66,3 +72,44 @@ public:
 	HuffmanNode<E>* root() { return root; }
 	int weight() { return root->weight(); }
 };
+
+//æ ‘çš„æ¯”è¾ƒç±»
+//å†™è¿™ä¸ªç±»æ˜¯ä¸ºäº†å°é¡¶å †ç±»çš„é€šç”¨æ€§
+class HuffmanTreeComp {
+public:
+	/*
+	* @brief åˆ¤æ–­è¾“å…¥çš„ä¸¤ä¸ªå“ˆå¼—æ›¼æ ‘å“ªä¸ªæƒé‡æ›´å¤§
+	* @param[in] a:HuffmanTree<wchar_t>	éœ€è¦æ¯”è¾ƒçš„ç¬¬ä¸€æ£µæ ‘
+				b:HuffmanTree<wchar_t> éœ€è¦æ¯”è¾ƒçš„ç¬¬äºŒè¯¾æ ‘
+	* @return bool	å‘½é¢˜â€œç¬¬ä¸€æ£µæ ‘çš„æƒé‡>ç¬¬äºŒæ£µæ ‘çš„æƒé‡â€çš„å€¼
+	* @author Siyuan Huang
+	* @date 2019/11/25
+	*/
+	bool prior(HuffmanTree<wchar_t> a, HuffmanTree<wchar_t> b) {
+		return a.weight() > b.weight() ? true : false;
+	}
+};
+
+/*
+* @brief ç”¨æ£®æ—å»ºç«‹å“ˆå¼—æ›¼æ ‘çš„å‡½æ•°
+* @param[in] tree_array:vector<HuffmanTree<E>>	æ£®æ—
+			count:int æ£®æ—çš„å¤§å°
+* @return HuffmanTree<E>*	å“ˆå¼—æ›¼æ ‘çš„æ ¹èŠ‚ç‚¹
+* @author Siyuan Huang
+* @date 2019/11/25
+*/
+template<typename E>
+HuffmanTree<E>* buildHuff(vector<HuffmanTree<E>> tree_array, int count) {
+	Heap<HuffmanTree<E>, HuffmanTreeComp>* forest =
+		new Heap<HuffmanTree<E>, HuffmanTreeComp>(tree_array, count, count);
+	HuffmanTree<E> *temp1, *temp2, *temp3 = NULL;
+	while (forest->size() > 1) {
+		temp1 = forest->removeFirst();
+		temp2 = forest->removeFirst();
+		temp3 = new HuffmanTree<E>(temp1, temp2);
+		forest->insert(temp3);
+		delete temp1;
+		delete temp2;
+	}
+	return temp3;
+}
