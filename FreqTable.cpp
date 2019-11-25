@@ -1,19 +1,19 @@
-#include"header_this.h"
+#include"FreqTable.h"
 
-/*¹¹Ôìº¯Êı£ºÊäÈë×Ö·û´®²úÉúÆµÊı±í²¢´¢´æÔÚÀàÄÚ*/
+/*æ„é€ å‡½æ•°ï¼šè¾“å…¥å­—ç¬¦ä¸²äº§ç”Ÿé¢‘æ•°è¡¨å¹¶å‚¨å­˜åœ¨ç±»å†…*/
 FreqTable::FreqTable(wstring input_string) {
 	buildTableHelp(input_string);
 }
 
-/*Ë½ÓĞµÄ²úÉú¸ù¾İ×Ö·û´®ÆµÊı±íµÄº¯Êı*/
+/*ç§æœ‰çš„äº§ç”Ÿæ ¹æ®å­—ç¬¦ä¸²é¢‘æ•°è¡¨çš„å‡½æ•°*/
 void FreqTable::buildTableHelp(wstring input_string) {
-	int length_str = input_string.length();		//¼ÇÂ¼ÊäÈë×Ö·û´®µÄ³¤¶È£¬ÒÔ¹©ºóĞø±éÀúÊ¹ÓÃ
-	//±éÀúÕû¸ö×Ö·û´®£¬¹¹½¨ÆµÊı±í
+	int length_str = input_string.length();		//è®°å½•è¾“å…¥å­—ç¬¦ä¸²çš„é•¿åº¦ï¼Œä»¥ä¾›åç»­éå†ä½¿ç”¨
+	//éå†æ•´ä¸ªå­—ç¬¦ä¸²ï¼Œæ„å»ºé¢‘æ•°è¡¨
 	for (int iter_str = 0;iter_str < length_str;iter_str++) {
 		wchar_t curr = input_string[iter_str];
 		int length_vec = records.size();
-		bool inTable = false;		//ÓÃÀ´¼ÇÂ¼µ±Ç°×Ö·ûÊÇ·ñÔÚÆµÊı±íÖĞ£¬³õÊ¼»¯Îªfalse
-		//±éÀúµ±Ç°µÄÆµÊı±í£¬Èôµ±Ç°×Ö·ûÔÚÆµÊı±íÖĞÔò¶ÔÓ¦¼ÇÂ¼µÄÆµÊı+1
+		bool inTable = false;		//ç”¨æ¥è®°å½•å½“å‰å­—ç¬¦æ˜¯å¦åœ¨é¢‘æ•°è¡¨ä¸­ï¼Œåˆå§‹åŒ–ä¸ºfalse
+		//éå†å½“å‰çš„é¢‘æ•°è¡¨ï¼Œè‹¥å½“å‰å­—ç¬¦åœ¨é¢‘æ•°è¡¨ä¸­åˆ™å¯¹åº”è®°å½•çš„é¢‘æ•°+1
 		for (int iter_vec = 0;iter_vec < length_vec;iter_vec++) {
 			if (curr == records[iter_vec].val) {
 				inTable = true;
@@ -21,9 +21,9 @@ void FreqTable::buildTableHelp(wstring input_string) {
 				break;
 			}
 		}
-		//Èô±éÀúÈ«±í¶¼Î´ÕÒµ½£¬Ôò´´½¨ĞÂµÄ¼ÍÂ¼²¢Ìí¼Óµ½±íµÄÄ©Î²
+		//è‹¥éå†å…¨è¡¨éƒ½æœªæ‰¾åˆ°ï¼Œåˆ™åˆ›å»ºæ–°çš„çºªå½•å¹¶æ·»åŠ åˆ°è¡¨çš„æœ«å°¾
 		if (inTable == false) {
-			record new_record;		//ĞÂµÄ¼ÇÂ¼
+			record new_record;		//æ–°çš„è®°å½•
 			new_record.val = curr;
 			new_record.freq = 1;
 			records.push_back(new_record);
@@ -31,7 +31,7 @@ void FreqTable::buildTableHelp(wstring input_string) {
 	}
 }
 
-/*·µ»Ø²úÉúµÄÂë±íÖĞµÄËùÓĞ¼ÇÂ¼£¨ÒÔvectorĞÎÊ½×éÖ¯ÆğÀ´£©*/
+/*è¿”å›äº§ç”Ÿçš„ç è¡¨ä¸­çš„æ‰€æœ‰è®°å½•ï¼ˆä»¥vectorå½¢å¼ç»„ç»‡èµ·æ¥ï¼‰*/
 vector<record> FreqTable::getAllRecords() {
 	return records;
 }
