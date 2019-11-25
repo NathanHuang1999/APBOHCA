@@ -1,10 +1,11 @@
 #include"header_this.h"
+#include"header_classes.h"
 
-/*Ö÷º¯Êı*/
+/*ä¸»å‡½æ•°*/
 void main() {
 
-	//³É¹¦µÄÎÄ¼ş¶ÁÈë´úÂë£¬ÒÔ¹©±¾ÏîÄ¿²Î¿¼
-	//¼ÇµÃÔÚ¶ÁÎÄ¼şµÄÊ±ºòĞèÒªcatchÒì³£"Error 01: File open fail!"
+	//æˆåŠŸçš„æ–‡ä»¶è¯»å…¥ä»£ç ï¼Œä»¥ä¾›æœ¬é¡¹ç›®å‚è€ƒ
+	//è®°å¾—åœ¨è¯»æ–‡ä»¶çš„æ—¶å€™éœ€è¦catchå¼‚å¸¸"Error 01: File open fail!"
 	/*string path;
 	cout << "Please enter the name of the file you want to open:" << endl;
 	cin >> path;
@@ -13,85 +14,4 @@ void main() {
 	FreqTable table_toolman(inputed_string);
 	vector<record> table = table_toolman.getAllRecords();
 	*/
-}
-
-/*
-* @brief ÎÄ±¾ÎÄ¼ş¶ÁÈëº¯Êı
-* @param[in] path:char*	ÎÄ¼şµÄ£¨Ïà¶Ô»ò¾ø¶Ô£©Â·¾¶
-* @return string		ÎÄ¼şÖĞµÄËùÓĞÎÄ±¾ÄÚÈİ
-* @author Siyuan Huang
-* @date 2019/11/24
-*/
-wstring text_input(char* path) {
-	ifstream file_in;
-	file_in.open(path, ios::_Nocreate);
-	//Òì³£´¦Àí
-	//ÈôÎÄ¼ş´ò¿ªÊ§°Ü£¬ÔòÏÈ²Â²âÓÃ»§ÊäÈëµÄ²»ÊÇÂ·¾¶¶øÖ»ÓĞÎÄ¼şÃû£¬ÕâÖÖÇé¿öÏÂ¸ÃÎÄ¼şÓ¦´¦ÓÚ³ÌĞòµÄÍ¬Ò»Ä¿Â¼ÏÂ¡£
-	//ËùÒÔÎªÎÄ¼şÃû²¹È«Â·¾¶²¢ÔÙ´Î³¢ÊÔ´ò¿ª¡£ÈôÈÔÈ»´ò¿ªÊ§°ÜÔòÅ×³öÒì³££º"Error 01: File open fail!"
-	if (!file_in.is_open()) {
-		string path_sub;
-		string filename = path;
-		path_sub = "./" + filename;
-		file_in.open(path_sub, ios::_Nocreate);
-		if (!file_in.is_open()) {
-			throw "Error 01: File open fail!";
-			return NULL;
-		}
-	}
-	//»ñÈ¡ÎÄ¼şµÄ´óĞ¡
-	file_in.seekg(0, file_in.end);
-	int length = file_in.tellg();
-	file_in.seekg(0, file_in.beg);
-	//´ÓÎÄ¼şÖĞ¶ÁÈëÎÄ±¾Êı¾İ
-	char* buffer = new char[length];	//ÓÃÓÚ´æ·Å´ÓÎÄ±¾ÎÄ¼şÖĞ¶ÁÈëµÄÄÚÈİ
-	file_in.read(buffer, length);
-	string buffer_str;
-	wstring buffer_ret;
-	//½«ĞÅÏ¢´¢´æÔÚstring¶ÔÏóÖĞ£¬ÀûÓÃÆäÁ¼ºÃÌØĞÔ±ãÓÚºóĞøµÄ²Ù×÷
-	buffer_str = buffer;
-	buffer_ret = ANSIToUnicode(buffer_str);
-	file_in.close();
-	delete[] buffer;
-	//delete &buffer_str;
-	return buffer_ret;
-}
-
-/*´Ëº¯ÊıÓÃÓÚ½«ANSI¸ñÊ½µÄstring×ª»»³ÉUTF-16¸ñÊ½µÄwstring
-°æÈ¨ÉùÃ÷£º±¾ÎÄÎªCSDN²©Ö÷¡¸FlushHip¡¹µÄÔ­´´ÎÄÕÂ£¬×ñÑ­ CC 4.0 BY-SA °æÈ¨Ğ­Òé£¬×ªÔØÇë¸½ÉÏÔ­ÎÄ³ö´¦Á´½Ó¼°±¾ÉùÃ÷¡£
-Ô­ÎÄÁ´½Ó£ºhttps://blog.csdn.net/FlushHip/article/details/82836867
-*/
-wstring ANSIToUnicode(const std::string & str) {
-	setlocale(LC_CTYPE, "");
-	wstring ret;
-	mbstate_t state = {};
-	const char *src = str.data();
-	size_t len = mbsrtowcs(nullptr, &src, 0, &state);
-	if (static_cast<size_t>(-1) != len) {
-		unique_ptr< wchar_t[] > buff(new wchar_t[len + 1]);
-		len = mbsrtowcs(buff.get(), &src, len, &state);
-		if (static_cast<size_t>(-1) != len) {
-			ret.assign(buff.get(), len);
-		}
-	}
-	return ret;
-}
-
-/*´Ëº¯ÊıÓÃÓÚ½«UTF-16¸ñÊ½µÄwstring×ª»»³ÉANSI¸ñÊ½µÄstring
-°æÈ¨ÉùÃ÷£º±¾ÎÄÎªCSDN²©Ö÷¡¸FlushHip¡¹µÄÔ­´´ÎÄÕÂ£¬×ñÑ­ CC 4.0 BY-SA °æÈ¨Ğ­Òé£¬×ªÔØÇë¸½ÉÏÔ­ÎÄ³ö´¦Á´½Ó¼°±¾ÉùÃ÷¡£
-Ô­ÎÄÁ´½Ó£ºhttps://blog.csdn.net/FlushHip/article/details/82836867
-*/
-string UnicodeToANSI(const std::wstring & wstr) {
-	setlocale(LC_CTYPE, "");
-	string ret;
-	mbstate_t state = {};
-	const wchar_t *src = wstr.data();
-	size_t len = wcsrtombs(nullptr, &src, 0, &state);
-	if (static_cast<size_t>(-1) != len) {
-		unique_ptr< char[] > buff(new char[len + 1]);
-		len = wcsrtombs(buff.get(), &src, len, &state);
-		if (static_cast<size_t>(-1) != len) {
-			ret.assign(buff.get(), len);
-		}
-	}
-	return ret;
 }
