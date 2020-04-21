@@ -1,83 +1,147 @@
 #include"header_this.h"
-#include"header_classes.h"
 
 /*
-* @brief ÎÄ±¾ÎÄ¼ş¶ÁÈëº¯Êı
-* @param[in] path:char*	ÎÄ¼şµÄ£¨Ïà¶Ô»ò¾ø¶Ô£©Â·¾¶
-* @return string		ÎÄ¼şÖĞµÄËùÓĞÎÄ±¾ÄÚÈİ
+* @brief æ–‡æœ¬æ–‡ä»¶è¯»å…¥å‡½æ•°
+* @param[in] path:char*	æ–‡ä»¶çš„ï¼ˆç›¸å¯¹æˆ–ç»å¯¹ï¼‰è·¯å¾„
+			size:size_file_t* æŒ‡å‘è®°å½•åŸæ–‡ä»¶å¤§å°ï¼ˆå­—èŠ‚æ•°ï¼‰çš„æ•°æ®çš„æŒ‡é’ˆ
+* @return char* æŒ‡å‘æ–‡ä»¶ä¸­çš„æ‰€æœ‰æ–‡æœ¬å†…å®¹çš„æŒ‡é’ˆ
 * @author Siyuan Huang
-* @date 2019/11/24
+* @date 2019/12/06
 */
-wstring text_input(char* path) {
+char* text_input(char* path, size_file_t* size) {
 	ifstream file_in;
-	file_in.open(path, ios::_Nocreate);
-	//Òì³£´¦Àí
-	//ÈôÎÄ¼ş´ò¿ªÊ§°Ü£¬ÔòÏÈ²Â²âÓÃ»§ÊäÈëµÄ²»ÊÇÂ·¾¶¶øÖ»ÓĞÎÄ¼şÃû£¬ÕâÖÖÇé¿öÏÂ¸ÃÎÄ¼şÓ¦´¦ÓÚ³ÌĞòµÄÍ¬Ò»Ä¿Â¼ÏÂ¡£
-	//ËùÒÔÎªÎÄ¼şÃû²¹È«Â·¾¶²¢ÔÙ´Î³¢ÊÔ´ò¿ª¡£ÈôÈÔÈ»´ò¿ªÊ§°ÜÔòÅ×³öÒì³££º"Error 01: File open fail!"
+	file_in.open(path, ios::binary | ios::_Nocreate);
+	//å¼‚å¸¸å¤„ç†
+	//è‹¥æ–‡ä»¶æ‰“å¼€å¤±è´¥ï¼Œåˆ™å…ˆçŒœæµ‹ç”¨æˆ·è¾“å…¥çš„ä¸æ˜¯è·¯å¾„è€Œåªæœ‰æ–‡ä»¶åï¼Œè¿™ç§æƒ…å†µä¸‹è¯¥æ–‡ä»¶åº”å¤„äºç¨‹åºçš„åŒä¸€ç›®å½•ä¸‹ã€‚
+	//æ‰€ä»¥ä¸ºæ–‡ä»¶åè¡¥å…¨è·¯å¾„å¹¶å†æ¬¡å°è¯•æ‰“å¼€ã€‚è‹¥ä»ç„¶æ‰“å¼€å¤±è´¥åˆ™æŠ›å‡ºå¼‚å¸¸
 	if (!file_in.is_open()) {
 		string path_sub;
 		string filename = path;
 		path_sub = "./" + filename;
-		file_in.open(path_sub, ios::_Nocreate);
+		file_in.open(path_sub, ios::binary | ios::_Nocreate);
 		if (!file_in.is_open()) {
 			throw "Error 01: File open fail!";
-			return NULL;
 		}
 	}
-	//»ñÈ¡ÎÄ¼şµÄ´óĞ¡
+	//è·å–æ–‡ä»¶çš„å¤§å°
 	file_in.seekg(0, file_in.end);
-	int length = file_in.tellg();
+	size_file_t length = file_in.tellg();
+	//è‹¥æ–‡ä»¶å¤§å°ä¸º0å­—èŠ‚ï¼Œåˆ™æŠ›å‡ºå¼‚å¸¸
+	if (length == 0)
+		throw "Error 04: This file is empty!";
 	file_in.seekg(0, file_in.beg);
-	//´ÓÎÄ¼şÖĞ¶ÁÈëÎÄ±¾Êı¾İ
-	char* buffer = new char[length];	//ÓÃÓÚ´æ·Å´ÓÎÄ±¾ÎÄ¼şÖĞ¶ÁÈëµÄÄÚÈİ
+	//ä»æ–‡ä»¶ä¸­è¯»å…¥æ–‡æœ¬æ•°æ®
+	char* buffer = new char[length + 1];	//ç”¨äºå­˜æ”¾ä»æ–‡æœ¬æ–‡ä»¶ä¸­è¯»å…¥çš„å†…å®¹
 	file_in.read(buffer, length);
-	string buffer_str;
-	wstring buffer_ret;
-	//½«ĞÅÏ¢´¢´æÔÚstring¶ÔÏóÖĞ£¬ÀûÓÃÆäÁ¼ºÃÌØĞÔ±ãÓÚºóĞøµÄ²Ù×÷
-	buffer_str = buffer;
-	buffer_ret = ANSIToUnicode(buffer_str);
+	buffer[length] = '\0';
+	//è®°å½•åŸæ–‡ä»¶çš„å­—èŠ‚æ•°
+	*size = length;
 	file_in.close();
-	delete[] buffer;
-	//delete &buffer_str;
-	return buffer_ret;
+	return buffer;
 }
 
-/*´Ëº¯ÊıÓÃÓÚ½«ANSI¸ñÊ½µÄstring×ª»»³ÉUTF-16¸ñÊ½µÄwstring
-°æÈ¨ÉùÃ÷£º±¾ÎÄÎªCSDN²©Ö÷¡¸FlushHip¡¹µÄÔ­´´ÎÄÕÂ£¬×ñÑ­ CC 4.0 BY-SA °æÈ¨Ğ­Òé£¬×ªÔØÇë¸½ÉÏÔ­ÎÄ³ö´¦Á´½Ó¼°±¾ÉùÃ÷¡£
-Ô­ÎÄÁ´½Ó£ºblog.csdn.net/FlushHip/article/details/82836867
+/*
+* @brief å‹ç¼©æ–‡ä»¶ï¼ˆäºŒè¿›åˆ¶ï¼‰å†™å…¥å‡½æ•°
+* @param[in] filename:char*	å‹ç¼©æ–‡ä»¶å
+			mark:int æ–‡ä»¶å¼€å¤´æ ‡è®°
+			size_of_former_file:size_file_t åŸæ–‡ä»¶å¤§å°ï¼ˆå­—èŠ‚æ•°ï¼‰
+			freq_table:vector<record>* æŒ‡å‘é¢‘æ•°è¡¨çš„æŒ‡é’ˆ
+			compressed_data:vector<bool>* æŒ‡å‘å‹ç¼©åæ•°æ®çš„æŒ‡é’ˆ
+* @return void
+* @author Siyuan Huang
+* @date 2019/12/05
 */
-wstring ANSIToUnicode(const std::string & str) {
-	setlocale(LC_CTYPE, "");
-	wstring ret;
-	mbstate_t state = {};
-	const char *src = str.data();
-	size_t len = mbsrtowcs(nullptr, &src, 0, &state);
-	if (static_cast<size_t>(-1) != len) {
-		unique_ptr< wchar_t[] > buff(new wchar_t[len + 1]);
-		len = mbsrtowcs(buff.get(), &src, len, &state);
-		if (static_cast<size_t>(-1) != len) {
-			ret.assign(buff.get(), len);
-		}
+void binary_output(char* filename, int mark, size_file_t size_of_former_file, vector<record>* freq_table,
+	vector<char>* compressed_data, int valid) {
+	ofstream file_out;
+	file_out.open(filename, ios::binary | ios::_Noreplace);
+	if (!file_out.is_open()) {
+		throw "Error 02: File write fail! Check if there is a file with the same name!";
 	}
-	return ret;
+	int size_of_table = sizeof((*freq_table)[0])*freq_table->size();	// é¢‘æ•°è¡¨çš„å¤§å°ï¼ˆå­—èŠ‚æ•°ï¼‰
+	size_file_t size_of_data = compressed_data->size();		// å‹ç¼©åæ•°æ®çš„å¤§å°ï¼ˆå­—èŠ‚æ•°ï¼‰
+	file_out.write((char*)&mark, sizeof(int));
+	file_out.write((char*)&size_of_table, sizeof(int));
+	file_out.write((char*)&size_of_data, sizeof(size_file_t));
+	file_out.write((char*)&size_of_former_file, sizeof(size_file_t));
+	file_out.write((char*)&valid, sizeof(int));
+	file_out.write((char*)&((*freq_table)[0]), size_of_table);
+	file_out.write((char*)&((*compressed_data)[0]), size_of_data);
+	file_out.close();
 }
 
-/*´Ëº¯ÊıÓÃÓÚ½«UTF-16¸ñÊ½µÄwstring×ª»»³ÉANSI¸ñÊ½µÄstring
-°æÈ¨ÉùÃ÷£º±¾ÎÄÎªCSDN²©Ö÷¡¸FlushHip¡¹µÄÔ­´´ÎÄÕÂ£¬×ñÑ­ CC 4.0 BY-SA °æÈ¨Ğ­Òé£¬×ªÔØÇë¸½ÉÏÔ­ÎÄ³ö´¦Á´½Ó¼°±¾ÉùÃ÷¡£
-Ô­ÎÄÁ´½Ó£ºblog.csdn.net/FlushHip/article/details/82836867
+/*
+* @brief å‹ç¼©æ–‡ä»¶ï¼ˆäºŒè¿›åˆ¶ï¼‰è¯»å…¥å‡½æ•°
+* @param[in] path:char*	æ–‡ä»¶çš„ï¼ˆç›¸å¯¹æˆ–ç»å¯¹ï¼‰è·¯å¾„
+			freq_table:record** æŒ‡å‘é¢‘æ•°è¡¨è®°å½•æ•°ç»„çš„æŒ‡é’ˆ
+			num_of_valid_digit:int* æŒ‡å‘å‹ç¼©åæ•°æ®æœ€åä¸€ä¸ªå­—èŠ‚ä¸­çš„æœ‰æ•ˆä½æ•°çš„æŒ‡é’ˆ
+			compressed_data:char** æŒ‡å‘å‹ç¼©æ–‡ä»¶å—æŒ‡é’ˆçš„æŒ‡é’ˆ
+			size_of_table:int* æŒ‡å‘é¢‘æ•°è¡¨å¤§å°çš„æŒ‡é’ˆ
+			size_of_data:size_file_t* æŒ‡å‘å‹ç¼©åæ•°æ®å¤§å°çš„æŒ‡é’ˆ
+			size_of_former_file:size_file_t* æŒ‡å‘åŸæ–‡ä»¶å¤§å°çš„æŒ‡é’ˆ
+* @return void
+* @author Siyuan Huang
+* @date 2019/12/08
 */
-string UnicodeToANSI(const std::wstring & wstr) {
-	setlocale(LC_CTYPE, "");
-	string ret;
-	mbstate_t state = {};
-	const wchar_t *src = wstr.data();
-	size_t len = wcsrtombs(nullptr, &src, 0, &state);
-	if (static_cast<size_t>(-1) != len) {
-		unique_ptr< char[] > buff(new char[len + 1]);
-		len = wcsrtombs(buff.get(), &src, len, &state);
-		if (static_cast<size_t>(-1) != len) {
-			ret.assign(buff.get(), len);
+void binary_input(char* filename, record** freq_table, int* num_of_valid_digit,
+	char** compressed_data, int* size_of_table, size_file_t* size_of_data, size_file_t* size_of_former_file) {
+	ifstream file_in;
+	file_in.open(filename, ios::binary | ios::_Nocreate);
+	// å¼‚å¸¸å¤„ç†
+	// è‹¥æ–‡ä»¶æ‰“å¼€å¤±è´¥ï¼Œåˆ™å…ˆçŒœæµ‹ç”¨æˆ·è¾“å…¥çš„ä¸æ˜¯è·¯å¾„è€Œåªæœ‰æ–‡ä»¶åï¼Œè¿™ç§æƒ…å†µä¸‹è¯¥æ–‡ä»¶åº”å¤„äºç¨‹åºçš„åŒä¸€ç›®å½•ä¸‹ã€‚
+	// æ‰€ä»¥ä¸ºæ–‡ä»¶åè¡¥å…¨è·¯å¾„å¹¶å†æ¬¡å°è¯•æ‰“å¼€ã€‚è‹¥ä»ç„¶æ‰“å¼€å¤±è´¥åˆ™æŠ›å‡ºå¼‚å¸¸ï¼š"Error 01: File open fail!"
+	if (!file_in.is_open()) {
+		string path_sub;
+		string filename_str = filename;
+		path_sub = "./" + filename_str;
+		file_in.open(path_sub, ios::binary | ios::_Nocreate);
+		if (!file_in.is_open()) {
+			throw "Error 01: File open fail!";
 		}
 	}
-	return ret;
+	//è·å–æ–‡ä»¶çš„å¤§å°
+	file_in.seekg(0, file_in.end);
+	size_file_t length = file_in.tellg();
+	//è‹¥æ–‡ä»¶å¤§å°è¿‡å°ï¼Œåˆ™æŠ›å‡ºå¼‚å¸¸
+	if (length <= (3 * sizeof(int) + 2 * sizeof(size_file_t))) {
+		throw "Error 03: This file is not a compressed file!";
+	}
+	file_in.seekg(0, file_in.beg);
+	//æ ‡å¿—æ£€æµ‹ã€‚è‹¥æ–‡ä»¶å¼€å¤´çš„æ•´æ•°ä¸ä¸ºMARKï¼Œåˆ™æŠ›å‡ºå¼‚å¸¸
+	int mark = 0;
+	file_in.read((char*)(&mark), sizeof(int));
+	if (mark != MARK) {
+		throw "Error 03: This file is not a compressed file!";
+	}
+	file_in.read((char*)size_of_table, sizeof(int));
+	file_in.read((char*)size_of_data, sizeof(size_file_t));
+	file_in.read((char*)size_of_former_file, sizeof(size_file_t));
+	//è‹¥æ–‡ä»¶å¤§å°è®¡ç®—ä¸æ­£ç¡®ï¼Œåˆ™æŠ›å‡ºå¼‚å¸¸
+	if (length != ((3 * sizeof(int) + 2 * sizeof(size_file_t)) + *size_of_table + *size_of_data)) {
+		throw "Error 03: This file is not a compressed file!";
+	}
+	file_in.read((char*)num_of_valid_digit, sizeof(int));
+	*freq_table = new record[*size_of_table/sizeof(record)];
+	file_in.read((char*)(*freq_table), *size_of_table);
+	*compressed_data = new char[*size_of_data];
+	file_in.read(*compressed_data, *size_of_data);
+}
+
+/*
+* @brief å‹ç¼©æ–‡ä»¶ï¼ˆäºŒè¿›åˆ¶ï¼‰å†™å…¥å‡½æ•°
+* @param[in] filename:char*	ç›®æ ‡æ–‡ä»¶å
+			out_file:char* æŒ‡å‘è§£å‹åå­—ç¬¦ä¸²çš„æŒ‡é’ˆ
+			size:size_file_t ç›®æ ‡æ–‡ä»¶å¤§å°ï¼ˆå­—èŠ‚æ•°ï¼‰
+* @return void
+* @author Siyuan Huang
+* @date 2019/12/06
+*/
+void text_output(char* filename, char* out_file, size_file_t size) {
+	ofstream file_out;
+	file_out.open(filename, ios::binary | ios::_Noreplace);
+	if (!file_out.is_open()) {
+		throw "Error 02: File write fail! Check if there is a file with the same name!";
+	}
+	file_out.write(out_file, size);
+	file_out.close();
 }

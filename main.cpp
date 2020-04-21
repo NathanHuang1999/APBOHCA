@@ -1,17 +1,30 @@
 #include"header_this.h"
-#include"header_classes.h"
 
-/*主函数*/
-void main() {
-
-	//成功的文件读入代码，以供本项目参考
-	//记得在读文件的时候需要catch异常"Error 01: File open fail!"
-	/*string path;
-	cout << "Please enter the name of the file you want to open:" << endl;
-	cin >> path;
-	wstring inputed_string = text_input((char*)path.c_str());
-	wcout << inputed_string << endl;
-	FreqTable table_toolman(inputed_string);
-	vector<record> table = table_toolman.getAllRecords();
-	*/
+//主函数
+int main() {
+	//程序介绍
+	cout << "APBOHCA" << endl;
+	cout << "--A Program Based On Huffman Coding Algorithm" << endl;
+	cout << "1. Compress" << endl;
+	cout << "2. Decompress" << endl;
+	cout << "3. Quit" << endl;
+	bool cont = true;	//此变量记录是否继续运行程序
+	while (cont) {
+		string input;
+		cout << "Function number:";
+		cin >> input;
+		if (input == "1") {
+			compress();
+		}
+		else if (input == "2") {
+			decompress();
+		}
+		else if (input == "3") {
+			cont = false;
+		}
+		else {
+			cout << "Illegal input! Please type again." << endl;
+		}
+	}
+	return 0;
 }

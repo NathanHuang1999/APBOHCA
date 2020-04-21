@@ -1,10 +1,12 @@
 #pragma once
-#include"header_this.h"
+#include<iostream>
+#include<string>
 
-//¶¨ÒåÂë±íÖĞµÄ¼ÇÂ¼
+using namespace std;
+
+//å®šä¹‰ç è¡¨ä¸­çš„è®°å½•
 struct Record_CodeTable {
-	string code;	//×Ö·ûµÄÑ¹Ëõ±àÂë£¬´¢´æÔÚ×Ö·û´®ÖĞ
-	wchar_t val;	//×Ö·ûµÄÖµ
+	string code;	//å­—ç¬¦çš„å‹ç¼©ç¼–ç ï¼Œå‚¨å­˜åœ¨å­—ç¬¦ä¸²ä¸­
+	char val;	//å­—ç¬¦çš„å€¼
 };
 typedef struct Record_CodeTable record_CodeTable;
-

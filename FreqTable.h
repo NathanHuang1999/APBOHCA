@@ -1,20 +1,24 @@
 #pragma once
-#include"header_this.h"
+#include<string>
 #include<vector>
+#include"macro.h"
+typedef struct Record_FreqTable record;
 
-//¶¨ÒåÆµÊı±íÀà
+using namespace std;
+
+//å®šä¹‰é¢‘æ•°è¡¨ç±»
 class FreqTable {
 public:
-	FreqTable(wstring input_string);
+	FreqTable(char* input_string,size_file_t length);
 	vector<record> getAllRecords();
+	int size();
 private:
 	vector<record> records;
-	void buildTableHelp(wstring input_string);
+	void buildTableHelp(char* input_string, size_file_t length);
 };
 
-//¶¨ÒåÆµÊı±íÖĞµÄ¼ÇÂ¼
-struct Record {
-	int freq = 0;	//×Ö·û³öÏÖµÄ´ÎÊı¡£ÔÚÅÅĞòÊ±ÊÇ¹Ø¼ü×Ö
-	wchar_t val;		//×Ö·ûµÄÖµ
+//å®šä¹‰é¢‘æ•°è¡¨ä¸­çš„è®°å½•
+struct Record_FreqTable {
+	int freq = 0;	//å­—ç¬¦å‡ºç°çš„æ¬¡æ•°ã€‚åœ¨æ’åºæ—¶æ˜¯å…³é”®å­—
+	char val;		//å­—ç¬¦çš„å€¼
 };
-typedef struct Record record;

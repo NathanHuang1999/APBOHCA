@@ -2,9 +2,6 @@
 
 using namespace std;
 
-#define wstring string
-#define wchar_t char
-
 //"小顶"堆类
 template<typename E,typename Comp>
 class Heap {
@@ -83,4 +80,4 @@ public:
 		heap[pos_b] = temp;
 	}
 
-}; 
+};
